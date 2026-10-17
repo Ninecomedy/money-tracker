@@ -1,0 +1,16 @@
+{
+  "name": "money-tracker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/identity.test.js",
+    "test:cloud": "node tests/cloud.test.js",
+    "start": "node scripts/serve.js"
+  },
+  "devDependencies": {
+    "firebase": "13.0.0"
+  },
+  "overrides": {
+    "@grpc/grpc-js": "^1.13.6"
+  }
+}

@@ -6,6 +6,7 @@
     "indexes": "firestore.indexes.json"
   },
   "auth": {
+    "authorizedDomains": ["localhost", "money-tracker-pikac-20261017.firebaseapp.com", "money-tracker-pikac-20261017.web.app", "ninecomedy.github.io"],
     "providers": {
       "emailPassword": true
     }

@@ -3,7 +3,9 @@ Money Tracker — Username + Password / Firebase Spark
 โปรเจกต์: money-tracker-pikac-20261017
 ฐานข้อมูล: Firestore Standard (default), asia-southeast1
 บัญชี GitHub ที่ตรวจพบ: Ninecomedy
-ยังไม่เผยแพร่เว็บไซต์จนกว่าจะได้รับอนุญาต
+เว็บไซต์: https://ninecomedy.github.io/money-tracker/
+Repository: https://github.com/Ninecomedy/money-tracker
+เผยแพร่ตามที่ได้รับอนุญาตแล้ววันที่ 17 ตุลาคม 2026
 
 การใช้งาน
 - สมัครและเข้าสู่ระบบด้วย Username 3–32 ตัว: a–z, 0–9, _
@@ -64,7 +66,7 @@ GitHub Pages
 - ต้องเผยแพร่ index.html, identity.js และ firebase-config.js ร่วมกันที่รากเว็บไซต์
 - อย่าอัปโหลด node_modules, logs, .env, ข้อมูลสำรองการเงินจริง หรือ private keys
 - ตั้ง Pages เป็น Deploy from a branch และ root ของ branch ที่อัปโหลด
-- เพิ่มโดเมน ninecomedy.github.io ใน Auth authorized domains
+- ตั้งโดเมน ninecomedy.github.io ใน Auth authorized domains แล้ว
 - ตรวจ URL จริงและทดสอบผ่านเบราว์เซอร์หลังเผยแพร่
 
 อ้างอิง
