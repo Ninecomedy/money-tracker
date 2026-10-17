@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function owner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+    function validMoney(n) {
+      return n is number && n >= 0 && n <= 1000000000000;
+    }
+    match /users/{uid}/settings/{settingsId} {
+      allow read: if owner(uid);
+      allow create, update: if owner(uid)
+        && request.resource.data.keys().hasOnly(['opening', 'reserve', 'updatedAt'])
+        && request.resource.data.keys().hasAll(['opening', 'reserve', 'updatedAt'])
+        && validMoney(request.resource.data.opening)
+        && validMoney(request.resource.data.reserve)
+        && request.resource.data.updatedAt is string
+        && request.resource.data.updatedAt.size() <= 30;
+      allow delete: if owner(uid);
+    }
+    match /users/{uid}/entries/{entryId} {
+      allow read: if owner(uid);
+      allow create, update: if owner(uid)
+        && request.resource.data.keys().hasOnly(['type', 'amount', 'note', 'category', 'date'])
+        && request.resource.data.keys().hasAll(['type', 'amount', 'note', 'category', 'date'])
+        && (request.resource.data.type == 'income' || request.resource.data.type == 'expense')
+        && validMoney(request.resource.data.amount)
+        && request.resource.data.amount > 0
+        && request.resource.data.note is string
+        && request.resource.data.note.size() > 0
+        && request.resource.data.note.size() <= 100
+        && request.resource.data.category is string
+        && request.resource.data.category.size() <= 80
+        && request.resource.data.date is string
+        && request.resource.data.date.size() <= 30;
+      allow delete: if owner(uid);
+    }
+  }
+}

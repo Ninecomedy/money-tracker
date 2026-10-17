@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d1118">
+<title>กระเป๋าของฉัน | รายรับ–รายจ่าย</title>
+<style>
+:root{color-scheme:dark;--bg:#0d1118;--panel:#171e2a;--panel2:#1d2633;--text:#eef3f9;--muted:#9eaabb;--line:#2c3745;--green:#32c781;--gold:#f5ba4f;--red:#ff7474;--blue:#7aaeff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top right,#203042 0,transparent 35%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;line-height:1.55}
+.shell{max-width:980px;margin:auto;padding:32px 18px 64px}header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:23px;flex-wrap:wrap}.eyebrow{font-size:13px;color:var(--green);font-weight:650;letter-spacing:.07em}h1{font-size:30px;line-height:1.2;margin:5px 0 3px}p{margin:0}.sub{font-size:14px;color:var(--muted)}.chip{border:1px solid var(--line);border-radius:99px;padding:7px 12px;font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;min-width:0;box-shadow:0 10px 30px #0002}.card .k{font-size:14px;color:var(--muted)}.figure{font-size:30px;font-weight:750;letter-spacing:-.02em;margin-top:7px;overflow-wrap:anywhere}.figure.good{color:var(--green)}.figure.gold{color:var(--gold)}.figure.red{color:var(--red)}.tiny{color:var(--muted);font-size:12px;margin-top:7px}.section{margin-top:16px}.section h2{font-size:18px;margin:0 0 14px}.budget-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:16px}.budget-head .figure{font-size:34px}.bars{height:19px;display:flex;overflow:hidden;background:#303b47;border-radius:99px;width:100%}.bars>div{height:100%;transition:width .25s}.spent{background:var(--red)}.spendable{background:var(--green)}.reserved{background:var(--gold)}.legend{display:flex;gap:17px;flex-wrap:wrap;margin-top:13px;font-size:13px;color:var(--muted)}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}.legend b{color:var(--text)}.half{display:grid;grid-template-columns:1fr 1fr;gap:16px}.flex{display:flex;gap:10px;flex-wrap:wrap;align-items:end}label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}input,select{border:1px solid #354254;background:#101823;color:var(--text);border-radius:11px;padding:12px;font:inherit;outline:none;width:100%;min-width:0}input:focus,select:focus{border-color:var(--green)}input[type=number]{font-variant-numeric:tabular-nums}.field{flex:1;min-width:140px}.field.wide{flex:2;min-width:180px}button{border:0;cursor:pointer;border-radius:11px;padding:12px 15px;font-weight:700;font-size:14px;font-family:inherit;background:var(--green);color:#062111}button:hover{filter:brightness(1.07)}button.ghost{background:var(--panel2);border:1px solid var(--line);color:var(--text)}button.danger{background:transparent;color:var(--red);padding:7px 10px;border:1px solid #594044}button.small{padding:8px 11px;font-size:12px}.switch{display:flex;gap:8px;margin-bottom:17px}.switch button{flex:1;background:#202b38;color:var(--muted);border:1px solid var(--line)}.switch button.active-exp{background:#4b2c32;color:#ffb3b3;border-color:#835059}.switch button.active-inc{background:#1b4b38;color:#a6f6cc;border-color:#327b58}.settings{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}.msg{font-size:13px;color:var(--muted);min-height:20px;margin-top:10px}.msg.warn{color:var(--red)}.toolbar{display:flex;gap:8px;flex-wrap:wrap}.history-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.entries{display:flex;flex-direction:column;gap:9px;margin-top:15px}.entry{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#121a25;border:1px solid var(--line);border-radius:12px;padding:12px}.e-left{min-width:0}.e-note{font-weight:650;overflow-wrap:anywhere}.e-meta{font-size:12px;color:var(--muted)}.e-right{display:flex;align-items:center;gap:10px;flex-shrink:0}.e-amt{font-weight:750;font-variant-numeric:tabular-nums}.e-amt.inc{color:var(--green)}.e-amt.exp{color:var(--red)}.empty{text-align:center;color:var(--muted);padding:22px;font-size:14px}.footer{font-size:12px;color:var(--muted);margin-top:19px}.warning{color:var(--gold)}@media(max-width:700px){.grid{grid-template-columns:1fr}.half{grid-template-columns:1fr}.settings{grid-template-columns:1fr 1fr}.settings button{grid-column:span 2}.card{padding:17px}.figure{font-size:26px}h1{font-size:25px}.shell{padding-top:24px}.e-right{gap:5px}}
+
+[hidden]{display:none !important}
+.auth-wrap{max-width:520px;margin:28px auto}
+.auth-wrap h2{font-size:23px;margin:0 0 6px}
+.auth-wrap .flex{align-items:stretch}
+.auth-wrap .flex button{flex:1}
+.auth-wrap .field{margin-top:14px}
+#authUsername,#authPassword{font-size:16px}
+#signout{border:1px solid var(--line)}
+.auth-email{font-size:13px;color:var(--muted);word-break:break-word}
+.cloud-pill{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.status-indicator{height:8px;width:8px;border-radius:99px;background:var(--gold);display:inline-block}
+.status-indicator.connected{background:var(--green)}
+.status-indicator.failed{background:var(--red)}
+.setup-info{background:#352b1c;border:1px solid #796033;color:#ffd78b;border-radius:12px;padding:12px 15px;font-size:13px;margin-top:13px}
+button:disabled{opacity:.55;cursor:not-allowed}
+.e-right{flex-wrap:wrap;justify-content:flex-end;max-width:55%}
+@media(max-width:400px){.entry{align-items:flex-start}.e-amt{width:100%;text-align:right}}
+@media(max-width:700px){.cloud-pill{width:100%}.auth-wrap{margin:18px auto}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header><div><div class="eyebrow">PERSONAL MONEY TRACKER · CLOUD EDITION</div><h1>กระเป๋าของฉัน 💸</h1><p class="sub">บันทึกรายรับ–รายจ่าย ดูเงินเหลือ และกันเงินฉุกเฉินไว้</p></div><div class="cloud-pill"><span class="chip"><i id="cloudDot" class="status-indicator"></i> <span id="cloudStatus">กำลังเชื่อมต่อ Firebase...</span></span><button class="ghost small" type="button" id="signout" hidden>ออกจากระบบ</button></div></header>
+<section id="authGate" class="card auth-wrap" hidden>
+  <h2>🔐 เข้าสู่กระเป๋าของฉัน</h2>
+  <p class="sub">ใช้บัญชีเดียวกันบนมือถือกับคอม ข้อมูลจะซิงก์ผ่าน Firebase</p>
+  <form id="authForm">
+    <div class="field"><label for="authUsername">Username</label><input type="text" autocomplete="username" autocapitalize="none" spellcheck="false" id="authUsername" minlength="3" maxlength="32" pattern="[A-Za-z0-9_]{3,32}" placeholder="เช่น my_wallet" required><div class="tiny">3–32 ตัว: a–z, 0–9 และ _ ไม่แยกตัวพิมพ์ใหญ่–เล็ก</div></div>
+    <div class="field"><label for="authPassword">รหัสผ่าน (อย่างน้อย 6 ตัวอักษร)</label><input type="password" autocomplete="current-password" id="authPassword" minlength="6" required></div>
+    <div class="flex" style="margin-top:18px"><button type="submit" id="loginButton">เข้าสู่ระบบ</button><button class="ghost" type="button" id="registerButton">สมัครบัญชี</button></div>
+  </form>
+  <button class="ghost small" type="button" id="resetPasswordButton" style="margin-top:12px">ลืมรหัสผ่าน?</button>
+  <p class="tiny warning">บัญชี Username ไม่มีอีเมลกู้รหัสผ่าน หากลืมรหัสจะกู้เองไม่ได้ โปรดเก็บรหัสในตัวจัดการรหัสผ่าน</p>
+  <div class="msg" id="authMsg" aria-live="polite"></div>
+  <div class="setup-info" id="setupInfo" hidden>ยังไม่ได้ตั้งค่า Firebase: เปิดไฟล์ index.html แล้วใส่ค่า firebaseConfig ที่ Firebase Console ให้ครบก่อนนำไปใช้งาน</div>
+  <p class="sub" style="margin-top:13px">ข้อมูลการเงินจะอ่านได้เฉพาะบัญชีของนาย เมื่อกำหนด Firestore Security Rules ตามไฟล์ที่ให้ไว้</p>
+</section>
+<div id="appArea" hidden>
+<div class="auth-email" id="userEmail" style="margin-bottom:14px"></div>
+<div class="grid">
+<div class="card"><div class="k">เงินคงเหลือ</div><div id="balance" class="figure">250 บาท</div><div class="tiny">เงินตั้งต้น + รายรับ − รายจ่าย</div></div>
+<div class="card"><div class="k">เงินที่ยังใช้ได้</div><div id="freeMoney" class="figure good">200 บาท</div><div class="tiny">หลังหักเงินสำรองฉุกเฉิน</div></div>
+<div class="card"><div class="k">เงินสำรองที่เหลือ</div><div id="reserveMoney" class="figure gold">50 บาท</div><div class="tiny">ตั้งเป้ากันไว้ ไม่ใช้ถ้าไม่จำเป็น</div></div>
+</div>
+<section class="card section"><div class="budget-head"><div><div class="k">ภาพรวมเงินทั้งหมด</div><div id="poolValue" class="figure">250 บาท</div><div class="sub">แถบสีจะเปลี่ยนทันทีเมื่อบันทึกรายการ</div></div><div class="sub">ใช้ไป <strong id="spentSum" style="color:var(--red)">0 บาท</strong> · ได้รับเพิ่ม <strong id="incomeSum" style="color:var(--green)">0 บาท</strong></div></div>
+<div class="bars" role="img" aria-label="สัดส่วนเงินที่ใช้ไป เงินที่ใช้ได้ และเงินสำรอง"><div class="spent" id="barSpent" style="width:0%"></div><div class="spendable" id="barFree" style="width:80%"></div><div class="reserved" id="barReserve" style="width:20%"></div></div>
+<div class="legend"><span><i class="dot" style="background:var(--red)"></i>ใช้แล้ว <b id="legendSpent">0 ฿</b></span><span><i class="dot" style="background:var(--green)"></i>ยังใช้ได้ <b id="legendFree">200 ฿</b></span><span><i class="dot" style="background:var(--gold)"></i>เงินสำรอง <b id="legendReserve">50 ฿</b></span></div><div id="alert" class="msg"></div>
+</section>
+<div class="half section">
+<section class="card"><h2>＋ เพิ่มรายการใหม่</h2><div class="switch"><button id="expenseTab" class="active-exp" type="button">− รายจ่าย</button><button id="incomeTab" type="button">＋ รายรับ</button></div>
+<form id="entryForm"><div class="flex"><div class="field"><label for="amount">จำนวนเงิน (บาท)</label><input id="amount" type="number" min="0.01" step="0.01" placeholder="เช่น 45" required></div><div class="field"><label for="category">หมวดหมู่</label><select id="category"><option>อาหาร</option><option>เดินทาง</option><option>ของใช้</option><option>เกม/บันเทิง</option><option>รายได้</option><option>อื่น ๆ</option></select></div></div><div style="height:12px"></div><label for="note">รายละเอียด</label><input id="note" type="text" maxlength="100" placeholder="เช่น ซื้อไข่ 10 ฟอง" required><div style="height:15px"></div><button id="saveEntry" style="width:100%" type="submit">บันทึกรายจ่าย</button><div id="entryMsg" class="msg" aria-live="polite"></div></form></section>
+<section class="card"><h2>⚙ ตั้งค่าเงินของฉัน</h2><form id="settingsForm" class="settings"><div><label for="opening">เงินตั้งต้น (บาท)</label><input id="opening" type="number" min="0" step="0.01" value="250" required></div><div><label for="reserve">กันเงินสำรอง (บาท)</label><input id="reserve" type="number" min="0" step="0.01" value="50" required></div><button id="saveSettings" type="submit">บันทึก</button></form><div id="settingsMsg" class="msg" aria-live="polite"></div><p class="sub" style="margin-top:15px">ตัวอย่าง: เริ่ม 250 บาท กันฉุกเฉิน 50 บาท จึงเหลือเงินที่ใช้ได้ 200 บาท ถ้าจ่าย 40 บาท จะใช้ได้อีก 160 บาท</p></section>
+</div>
+<section class="card section"><div class="history-head"><div><h2 style="margin-bottom:2px">📒 ประวัติรายการ</h2><p id="countText" class="sub">ยังไม่มีรายการ</p></div><div class="toolbar"><button class="ghost small" id="csvExport" type="button">ส่งออก CSV</button><button class="ghost small" id="backupExport" type="button">สำรอง JSON</button><button class="ghost small" id="importButton" type="button">นำเข้าข้อมูล</button><input type="file" id="importFile" accept="application/json,.json" style="display:none"><button class="danger small" id="clearButton" type="button">ล้างรายการ</button></div></div><div class="entries" id="entries"><div class="empty">ยังไม่มีรายรับ–รายจ่าย เพิ่มรายการแรกได้เลย 🙂</div></div></section>
+<div class="footer">ข้อมูลบันทึกใน Cloud Firestore ของบัญชีที่เข้าสู่ระบบ พร้อมซิงก์ข้ามอุปกรณ์เมื่อเชื่อมต่ออินเทอร์เน็ต · แนะนำให้ส่งออก JSON เป็นระยะ เพื่อสำรองข้อมูลไว้ด้วย</div>
+</div>
+</main>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';
+import { getFirestore, collection, doc, getDocs, addDoc, updateDoc, setDoc, deleteDoc, writeBatch, onSnapshot, query, orderBy } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
+
+import { firebaseConfig } from './firebase-config.js';
+import { usernameEmail, accountName } from './identity.js';
+
+const $ = id => document.getElementById(id);
+const money = n => new Intl.NumberFormat('th-TH', {maximumFractionDigits:2}).format(n) + ' บาท';
+const short = n => new Intl.NumberFormat('th-TH', {maximumFractionDigits:2}).format(n) + ' ฿';
+const validNum = n => Number.isFinite(n) && n >= 0 && n <= 1000000000000;
+const DEFAULTS = {opening:250, reserve:50, items:[]};
+let data = {...DEFAULTS, items:[]};
+let editingId = null, writing = false;
+let entryType = 'expense', auth, db, currentUser = null, ready = false;
+let unsubscribeSettings = null, unsubscribeEntries = null;
+let receivedSettings = false, receivedEntries = false, pendingAuth = false;
+const hasConfig = firebaseConfig.apiKey !== 'PASTE_API_KEY_HERE' &&
+  firebaseConfig.projectId !== 'PASTE_PROJECT_ID_HERE' && firebaseConfig.appId !== 'PASTE_APP_ID_HERE';
+
+function cloudStatus(message, ok=null) {
+  $('cloudStatus').textContent = message;
+  $('cloudDot').className = 'status-indicator' + (ok === true ? ' connected' : ok === false ? ' failed' : '');
+}
+function friendly(err) {
+  const code = err?.code || '';
+  if (code === 'permission-denied') return 'Firebase ปฏิเสธการเข้าถึง กรุณาตรวจ Firestore Rules ให้ใช้เฉพาะ UID ของเจ้าของบัญชี';
+  if (code === 'auth/email-already-in-use') return 'Username นี้มีบัญชีแล้ว ลองเข้าสู่ระบบหรือใช้ชื่ออื่น';
+  if (code === 'auth/invalid-email') return 'Username ไม่ถูกต้อง';
+  if (code === 'auth/weak-password') return 'รหัสผ่านอ่อนเกินไป กรุณาตั้งรหัสผ่านให้ปลอดภัยขึ้น';
+  if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') return 'Username หรือรหัสผ่านไม่ถูกต้อง';
+  if (code === 'auth/too-many-requests') return 'มีการลองเข้าสู่ระบบมากเกินไป กรุณารอสักครู่';
+  if (code === 'auth/operation-not-allowed') return 'ยังไม่ได้เปิด Email/Password ใน Firebase Authentication';
+  if (code === 'auth/unauthorized-domain') return 'ยังไม่ได้เพิ่มโดเมนเว็บใน Authentication > Settings > Authorized domains';
+  if (code === 'unavailable') return 'เชื่อมต่อฐานข้อมูลไม่ได้ กรุณาตรวจอินเทอร์เน็ต';
+  return 'เกิดข้อผิดพลาด: ' + (code || err?.message || 'ไม่ทราบสาเหตุ');
+}
+function errorAt(element, err) { $(element).textContent = friendly(err); $(element).className = 'msg warn'; }
+function normalize(raw) {
+  if (!raw || typeof raw !== 'object') throw Error('รูปแบบไฟล์ไม่ถูกต้อง');
+  const opening=Number(raw.opening), reserve=Number(raw.reserve);
+  if (!validNum(opening) || !validNum(reserve) || !Array.isArray(raw.items) || raw.items.length>20000)
+    throw Error('รูปแบบข้อมูลไม่ถูกต้อง');
+  const items = raw.items.map((x,i) => {
+    if (!x || (x.type !== 'income' && x.type !== 'expense') || !validNum(Number(x.amount)) || Number(x.amount)<=0 || typeof x.note!=='string' || typeof x.category!=='string')
+      throw Error('ข้อมูลรายการไม่ถูกต้อง');
+    return {id:String(x.id||i).slice(0,60),type:x.type,amount:Number(x.amount), note:x.note.slice(0,100), category:x.category.slice(0,80),date:typeof x.date === 'string' ? x.date.slice(0,30) : new Date().toISOString()};
+  });
+  return {opening, reserve, items};
+}
+function totals() {
+  const income = data.items.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0);
+  const expense = data.items.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0);
+  const pool = data.opening+income, balance=pool-expense, reserve=Math.max(0,Math.min(data.reserve,balance)), free=Math.max(0,balance-reserve);
+  return {income,expense,pool,balance,reserve,free};
+}
+function render() {
+  const t=totals();
+  $('balance').textContent=money(t.balance);
+  $('balance').className='figure'+(t.balance<0?' red':'');
+  $('freeMoney').textContent=money(t.free);
+  $('reserveMoney').textContent=money(t.reserve);
+  $('poolValue').textContent=money(t.pool);
+  $('spentSum').textContent=money(t.expense);
+  $('incomeSum').textContent=money(t.income);
+  $('legendSpent').textContent=short(t.expense);
+  $('legendFree').textContent=short(t.free);
+  $('legendReserve').textContent=short(t.reserve);
+  const denominator = Math.max(t.pool,t.expense,1);
+  $('barSpent').style.width=(100*Math.min(t.expense,denominator)/denominator)+'%';
+  $('barFree').style.width=(100*t.free/denominator)+'%';
+  $('barReserve').style.width=(100*t.reserve/denominator)+'%';
+  $('alert').className='msg'; $('alert').textContent='';
+  if(t.balance<0) { $('alert').textContent='⚠️ รายจ่ายมากกว่าเงินทั้งหมด '+money(-t.balance);$('alert').className='msg warn'; }
+  else if(t.balance<data.reserve){ $('alert').textContent='⚠️ เงินคงเหลือเริ่มต่ำกว่าเป้าสำรอง '+money(data.reserve);$('alert').className='msg warn'; }
+  if(document.activeElement !== $('opening')) $('opening').value=data.opening;
+  if(document.activeElement !== $('reserve')) $('reserve').value=data.reserve;
+  $('countText').textContent=data.items.length+' รายการ';
+  const root=$('entries');root.replaceChildren();
+  if (!data.items.length) { const empty=document.createElement('div');empty.className='empty';empty.textContent='ยังไม่มีรายรับ–รายจ่าย เพิ่มรายการแรกได้เลย 🙂';root.appendChild(empty); }
+  else for (const x of [...data.items].reverse()) {
+    const e=document.createElement('div'); e.className='entry';
+    const left=document.createElement('div');left.className='e-left';
+    const note=document.createElement('div');note.className='e-note';note.textContent=x.note;
+    const meta=document.createElement('div');meta.className='e-meta';const d=new Date(x.date);
+    meta.textContent=x.category+' · '+(Number.isNaN(d.getTime())?'ไม่ทราบวันที่':d.toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'}));
+    left.append(note,meta);
+    const right=document.createElement('div');right.className='e-right';
+    const amt=document.createElement('div');amt.className='e-amt '+(x.type==='income'?'inc':'exp');amt.textContent=(x.type==='income'?'+':'−')+money(x.amount);
+    const del=document.createElement('button');del.className='danger small';del.textContent='ลบ';del.type='button';del.disabled=!ready || writing;
+    del.addEventListener('click', async () => {
+      if (!currentUser || !ready || writing || !confirm('ลบรายการ “'+x.note+'” ?')) return;
+      const uid=currentUser.uid;writing=true;updateReady();del.disabled=true;
+      try { await deleteDoc(doc(db,'users',uid,'entries',x.id)); }
+      catch(err) { alert(friendly(err)); }
+      finally {if(currentUser?.uid===uid){writing=false;updateReady();render();}}
+    });
+    const edit=document.createElement('button');edit.type='button';edit.className='ghost small';edit.textContent='แก้ไข';edit.disabled=!ready || writing;
+    edit.addEventListener('click',()=>{
+      if(!ready || writing)return;
+      editingId=x.id;tab(x.type);
+      $('amount').value=x.amount;$('note').value=x.note;$('category').value=x.category;
+      $('entryMsg').textContent='กำลังแก้ไขรายการ';$('cancelEdit').hidden=false;$('amount').focus();
+    });
+    right.append(amt,edit,del);e.append(left,right);root.appendChild(e);
+  }
+}
+function updateReady() {
+  ready = !!currentUser && receivedSettings && receivedEntries && navigator.onLine;
+  for (const id of ['saveEntry','saveSettings','importButton','clearButton']) $(id).disabled=!ready || writing;
+  $('signout').disabled=writing;
+  if (ready) cloudStatus('เชื่อมต่อ Cloud แล้ว',true);
+  else if(!navigator.onLine)cloudStatus('ออฟไลน์ — รอเชื่อมต่ออินเทอร์เน็ต',false);
+}
+function stopWatching() {
+  if (unsubscribeSettings) unsubscribeSettings(); if (unsubscribeEntries) unsubscribeEntries();
+  unsubscribeSettings=unsubscribeEntries=null;
+  receivedSettings=receivedEntries=false;ready=false;
+  data={...DEFAULTS,items:[]};editingId=null;writing=false;
+  $('entryForm').reset();$('cancelEdit').hidden=true;
+  for(const id of ['entryMsg','settingsMsg','authMsg'])$(id).textContent='';
+  updateReady();render();
+}
+function watchAccount(user) {
+  const uid=user.uid;
+  const settingsRef=doc(db,'users',uid,'settings','main');
+  const entriesRef=collection(db,'users',uid,'entries');
+  cloudStatus('กำลังโหลดข้อมูล...',null);
+  unsubscribeSettings=onSnapshot(settingsRef, {includeMetadataChanges:true}, snap=> {
+    if (currentUser?.uid!==uid) return;
+    if (snap.exists()) {
+      const raw=snap.data();
+      data.opening=validNum(raw.opening)?raw.opening:DEFAULTS.opening;
+      data.reserve=validNum(raw.reserve)?raw.reserve:DEFAULTS.reserve;
+    } else { data.opening=DEFAULTS.opening;data.reserve=DEFAULTS.reserve; }
+    receivedSettings=!snap.metadata.fromCache;updateReady();render();
+  }, err=> { if(currentUser?.uid!==uid)return;receivedSettings=false;updateReady();cloudStatus('ซิงก์ไม่สำเร็จ',false); errorAt('settingsMsg',err); });
+  unsubscribeEntries=onSnapshot(query(entriesRef,orderBy('date','asc')), {includeMetadataChanges:true}, snap=> {
+    if (currentUser?.uid!==uid) return;
+    data.items=snap.docs.map(d=>({...d.data(),id:d.id})).filter(x=>
+      (x.type==='income'||x.type==='expense')&&validNum(x.amount)&&x.amount>0&&typeof x.note==='string'&&typeof x.category==='string'
+    );
+    receivedEntries=!snap.metadata.fromCache;updateReady();render();
+  }, err=> { if(currentUser?.uid!==uid)return;receivedEntries=false;updateReady();cloudStatus('ซิงก์ไม่สำเร็จ',false);errorAt('entryMsg',err); });
+}
+function tab(type) {
+  entryType=type;
+  $('expenseTab').className=type==='expense'?'active-exp':'';
+  $('incomeTab').className=type==='income'?'active-inc':'';
+  $('saveEntry').textContent=editingId?'บันทึกการแก้ไข':type==='expense'?'บันทึกรายจ่าย':'บันทึกรายรับ';
+  $('category').value=type==='expense'?'อาหาร':'รายได้';
+}
+const cancelEdit=document.createElement('button');
+cancelEdit.id='cancelEdit';cancelEdit.type='button';cancelEdit.className='ghost small';cancelEdit.textContent='ยกเลิกแก้ไข';cancelEdit.hidden=true;
+$('entryForm').append(cancelEdit);
+cancelEdit.addEventListener('click',()=>{if(writing)return;editingId=null;$('entryForm').reset();cancelEdit.hidden=true;tab('expense');$('entryMsg').textContent='';});
+window.addEventListener('offline',()=>{updateReady();render();});
+window.addEventListener('online',()=>{updateReady();render();});
+$('expenseTab').addEventListener('click',()=>tab('expense'));
+$('incomeTab').addEventListener('click',()=>tab('income'));
+$('entryForm').addEventListener('submit',async ev=>{
+  ev.preventDefault(); if (!currentUser || !ready || writing) return;
+  const uid=currentUser.uid;
+  const amount=Number($('amount').value), note=$('note').value.trim(), category=$('category').value;
+  if(!validNum(amount)||amount<=0||!note) { $('entryMsg').textContent='กรอกจำนวนเงินและรายละเอียดให้ถูกต้อง';$('entryMsg').className='msg warn';return; }
+  writing=true;updateReady();
+  $('saveEntry').disabled=true;$('entryMsg').textContent='กำลังบันทึกขึ้น Cloud...';$('entryMsg').className='msg';
+  try {
+    const values={type:entryType,amount,note:note.slice(0,100),category:category.slice(0,80)};
+    if(editingId)await updateDoc(doc(db,'users',uid,'entries',editingId),values);
+    else await addDoc(collection(db,'users',uid,'entries'),{...values,date:new Date().toISOString()});
+    if(currentUser?.uid!==uid)return;
+    editingId=null;$('cancelEdit').hidden=true;tab(entryType);
+    $('entryMsg').textContent='บันทึกลง Cloud แล้ว ✓';$('amount').value='';$('note').value='';$('amount').focus();
+  } catch(err) { errorAt('entryMsg',err); }
+  finally { if(currentUser?.uid===uid){writing=false;updateReady();render();} }
+});
+$('settingsForm').addEventListener('submit',async ev=>{
+  ev.preventDefault(); if (!currentUser || !ready || writing) return;
+  const uid=currentUser.uid;
+  const opening=Number($('opening').value),reserve=Number($('reserve').value);
+  if(!validNum(opening)||!validNum(reserve)) {$('settingsMsg').textContent='กรุณากรอกจำนวนเงินที่ถูกต้อง';return;}
+  writing=true;updateReady();$('settingsMsg').textContent='กำลังบันทึก...';
+  try { await setDoc(doc(db,'users',uid,'settings','main'),{opening,reserve,updatedAt:new Date().toISOString()});$('settingsMsg').textContent='บันทึกการตั้งค่าใน Cloud แล้ว ✓'; }
+  catch(err){errorAt('settingsMsg',err);}
+  finally { if(currentUser?.uid===uid){writing=false;updateReady();render();} }
+});
+function download(name,body,type) {
+  const blob=new Blob([body],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+$('backupExport').addEventListener('click',()=>{if(ready)download('money-backup-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(data,null,2),'application/json;charset=utf-8');});
+function csvSafe(s){const v=String(s??'');return '"'+(/^[=+\-@\t\r]/.test(v)?"'"+v:v).replace(/"/g,'""')+'"';}
+$('csvExport').addEventListener('click',()=>{
+  if(!ready)return;
+  const rows=[['วันที่','ประเภท','หมวดหมู่','รายละเอียด','จำนวนเงิน (บาท)'],...data.items.map(x=>[x.date,x.type==='income'?'รายรับ':'รายจ่าย',x.category,x.note,x.type==='income'?x.amount:-x.amount])];
+  const csv='\ufeff'+rows.map(row=>row.map(csvSafe).join(',')).join('\r\n');
+  download('money-report-'+new Date().toISOString().slice(0,10)+'.csv',csv,'text/csv;charset=utf-8');
+});
+// Firestore batch จำกัดจำนวน writes; แบ่งเป็นชุดละ 400 เพื่อรองรับไฟล์สำรองที่มีหลายรายการ
+async function batchWrites(refs, build) {
+  for(let start=0;start<refs.length;start+=400) {
+    const batch=writeBatch(db);
+    for(const x of refs.slice(start,start+400))build(batch,x);
+    await batch.commit();
+  }
+}
+$('importButton').addEventListener('click',()=>{if(ready)$('importFile').click();});
+$('importFile').addEventListener('change',async ev=>{
+  const file=ev.target.files[0];if(!file || !currentUser || !ready || writing)return;
+  const uid=currentUser.uid;
+  try {
+    if(file.size>2000000)throw Error('ไฟล์ใหญ่เกิน 2 MB');
+    const next=normalize(JSON.parse(await file.text()));
+    if(currentUser?.uid!==uid || !ready || writing)return;
+    if(!confirm('การนำเข้าจะแทนที่รายการและการตั้งค่าปัจจุบันใน Cloud ทั้งหมด ควรสำรอง JSON ปัจจุบันก่อน ดำเนินการต่อหรือไม่?'))return;
+    writing=true;updateReady();
+    const col=collection(db,'users',uid,'entries');
+    const existing=await getDocs(col);
+    if(existing.size+next.items.length+1>450)throw Error('รายการเดิมรวมรายการใหม่เกิน 449 รายการ จึงยกเลิกโดยไม่เปลี่ยนข้อมูล');
+    const batch=writeBatch(db);
+    for(const snapshot of existing.docs)batch.delete(snapshot.ref);
+    for(const item of next.items){
+      const ref=doc(col);
+      batch.set(ref,{type:item.type,amount:item.amount,note:item.note,category:item.category,date:item.date});
+    }
+    batch.set(doc(db,'users',uid,'settings','main'),{opening:next.opening,reserve:next.reserve,updatedAt:new Date().toISOString()});
+    await batch.commit();
+    alert('นำเข้าข้อมูลขึ้น Cloud สำเร็จแล้ว');
+  } catch(err) { alert('นำเข้าล้มเหลว: '+friendly(err)+' — กรุณาตรวจข้อมูลจากไฟล์สำรอง'); }
+  finally {ev.target.value='';if(currentUser?.uid===uid){writing=false;updateReady();render();}}
+});
+$('clearButton').addEventListener('click',async()=>{
+  if (!currentUser || !ready || writing || !confirm('ลบรายรับ–รายจ่ายทั้งหมดใน Cloud? การกระทำนี้ย้อนกลับไม่ได้'))return;
+  const uid=currentUser.uid;writing=true;updateReady();
+  try {
+    const existing=await getDocs(collection(db,'users',uid,'entries'));
+    await batchWrites(existing.docs,(batch,snap)=>batch.delete(snap.ref));
+    alert('ลบรายการใน Cloud แล้ว');
+  } catch(err) { alert(friendly(err)); }
+  finally { if(currentUser?.uid===uid){writing=false;updateReady();render();} }
+});
+async function authAction(work) {
+  if(pendingAuth || !hasConfig)return;
+  pendingAuth=true;$('loginButton').disabled=true;$('registerButton').disabled=true;$('authMsg').textContent='กำลังติดต่อ Firebase...';$('authMsg').className='msg';
+  try { const message=await work();$('authMsg').textContent=message || 'สำเร็จ ✓'; }
+  catch(err) {errorAt('authMsg',err);}
+  finally {$('authPassword').value='';pendingAuth=false;$('loginButton').disabled=false;$('registerButton').disabled=false;}
+}
+$('authForm').addEventListener('submit',ev=>{
+  ev.preventDefault();authAction(()=>signInWithEmailAndPassword(auth,usernameEmail($('authUsername').value),$('authPassword').value));
+});
+$('registerButton').addEventListener('click',()=>{
+  if(!$('authUsername').reportValidity()||!$('authPassword').reportValidity())return;
+  authAction(()=>createUserWithEmailAndPassword(auth,usernameEmail($('authUsername').value),$('authPassword').value));
+});
+$('resetPasswordButton').addEventListener('click',()=>{
+  $('authMsg').className='msg warn';
+  $('authMsg').textContent='บัญชี Username ไม่มีอีเมลรับลิงก์กู้รหัสผ่าน หากลืมรหัสและออกจากระบบแล้ว ต้องติดต่อผู้ดูแลเพื่อตรวจสอบตัวตน ไม่สามารถกู้ด้วย Username อย่างเดียวได้';
+});
+$('signout').addEventListener('click',async()=>{try{await signOut(auth);}catch(err){alert(friendly(err));}});
+
+tab('expense');render();updateReady();
+if (!hasConfig) {
+  cloudStatus('ยังไม่ได้ตั้งค่า Firebase',false);
+  $('authGate').hidden=false;$('setupInfo').hidden=false;
+  $('loginButton').disabled=true;$('registerButton').disabled=true;$('resetPasswordButton').disabled=true;
+} else {
+  try {
+    const app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);
+    onAuthStateChanged(auth,user=>{
+      stopWatching();currentUser=user;
+      $('authGate').hidden=!!user;$('appArea').hidden=!user;$('signout').hidden=!user;
+      $('userEmail').textContent=user ? '🔐 เข้าสู่ระบบด้วย '+accountName(user) : '';
+      $('authPassword').value='';
+      if(user) watchAccount(user);
+      else cloudStatus('รอเข้าสู่ระบบ',null);
+    },err=>{cloudStatus('เชื่อมต่อ Authentication ไม่สำเร็จ',false);errorAt('authMsg',err);$('authGate').hidden=false;});
+  } catch(err) {cloudStatus('ตั้งค่า Firebase ไม่สำเร็จ',false);errorAt('authMsg',err);$('authGate').hidden=false;}
+}
+</script>
+</body>
+</html>
