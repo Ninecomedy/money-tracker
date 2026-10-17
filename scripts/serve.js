@@ -1,6 +1,6 @@
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
-const allowed = new Set(['index.html', 'identity.js', 'firebase-config.js']);
+const allowed = new Set(['index.html', 'identity.js', 'firebase-config.js', 'savings.js']);
 createServer(async (request, response) => {
   const name = new URL(request.url, 'http://localhost').pathname.slice(1) || 'index.html';
   if (!allowed.has(name)) { response.writeHead(404).end(); return; }

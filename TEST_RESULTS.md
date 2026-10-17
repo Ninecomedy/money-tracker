@@ -1,5 +1,26 @@
 # Money Tracker verification — 2026-10-17
 
+## Savings Wallet — local release candidate (not deployed)
+
+- Resumed existing working-tree changes; no production accounts or data were changed or deleted.
+- `npm test`: all 8 syntax, identity and wallet calculation tests passed.
+- `npm run test:savings-emulator`: passed using local Auth and Firestore emulators and project `demo-money-tracker`.
+- Deposit and withdrawal update savings and available funds while preserving total funds; excessive transfers and invalid amounts are rejected.
+- Two independent authenticated SDK clients attempted concurrent deposits exceeding combined available funds: exactly one succeeded, with one matching history record and no lost update.
+- Existing income 100 and expense 40 documents were unchanged after deposit 25 and withdrawal 10. Total remained 310, savings 215 and available 95.
+- Rules rejected anonymous history reads, cross-UID settings reads/writes and savings access, forged non-atomic history, and history update/delete. Expected PERMISSION_DENIED log lines are successful negative tests.
+- Decimal transfer 0.1 + 0.2 produced 0.3. Existing settings without a new migration flag remain supported.
+- Browser in emulator mode: first Save immediately replaced setup with the savings panel; deposit 25 gave savings 75 / available 175; withdrawal 10 gave savings 65 / available 185; total stayed 250 and income/expense stayed zero.
+- Browser rejected deposit 186 with only 185 available. Reload restored the savings panel and history. Edit initial settings and Cancel returned to the correct panels without changing balances.
+- Mobile viewport 390 x 844 had no horizontal document overflow. Local screenshots: `test-results/savings-desktop.png` and `test-results/savings-mobile.png`.
+- `git diff --check` passed. Ready for an approved deployment of rules and static assets, followed by online smoke testing; no deployment performed.
+
+### Savings limitations
+
+- Concurrency was tested using independent SDK clients, not physical devices. Refresh all open devices after deployment so entry mutations use the updated transaction coordination.
+- Available-funds validation is performed by the application transaction. Rules enforce UID isolation, nonnegative savings and atomic history consistency, but do not aggregate the income/expense collection to independently enforce available funds against a modified client.
+- The most recent 20 transfers are displayed. JSON backup includes balances and income/expense entries, not savings transfer history.
+
 ## Confirm Password and Remember Login release
 
 - Registration now requires matching Password and Confirm Password; login shows Username and Password only.

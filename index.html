@@ -56,8 +56,8 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <div class="auth-email" id="userEmail" style="margin-bottom:14px"></div>
 <div class="grid">
 <div class="card"><div class="k">เงินคงเหลือ</div><div id="balance" class="figure">250 บาท</div><div class="tiny">เงินตั้งต้น + รายรับ − รายจ่าย</div></div>
-<div class="card"><div class="k">เงินที่ยังใช้ได้</div><div id="freeMoney" class="figure good">200 บาท</div><div class="tiny">หลังหักเงินสำรองฉุกเฉิน</div></div>
-<div class="card"><div class="k">เงินสำรองที่เหลือ</div><div id="reserveMoney" class="figure gold">50 บาท</div><div class="tiny">ตั้งเป้ากันไว้ ไม่ใช้ถ้าไม่จำเป็น</div></div>
+<div class="card"><div class="k">เงินที่ยังใช้ได้</div><div id="freeMoney" class="figure good">200 บาท</div><div class="tiny">เงินทั้งหมด − เงินเก็บ</div></div>
+<div class="card"><div class="k">เงินเก็บ</div><div id="reserveMoney" class="figure gold">50 บาท</div><div class="tiny">ย้ายเข้า–ออกได้ โดยไม่เปลี่ยนเงินทั้งหมด</div></div>
 </div>
 <section class="card section"><div class="budget-head"><div><div class="k">ภาพรวมเงินทั้งหมด</div><div id="poolValue" class="figure">250 บาท</div><div class="sub">แถบสีจะเปลี่ยนทันทีเมื่อบันทึกรายการ</div></div><div class="sub">ใช้ไป <strong id="spentSum" style="color:var(--red)">0 บาท</strong> · ได้รับเพิ่ม <strong id="incomeSum" style="color:var(--green)">0 บาท</strong></div></div>
 <div class="bars" role="img" aria-label="สัดส่วนเงินที่ใช้ไป เงินที่ใช้ได้ และเงินสำรอง"><div class="spent" id="barSpent" style="width:0%"></div><div class="spendable" id="barFree" style="width:80%"></div><div class="reserved" id="barReserve" style="width:20%"></div></div>
@@ -66,7 +66,10 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <div class="half section">
 <section class="card"><h2>＋ เพิ่มรายการใหม่</h2><div class="switch"><button id="expenseTab" class="active-exp" type="button">− รายจ่าย</button><button id="incomeTab" type="button">＋ รายรับ</button></div>
 <form id="entryForm"><div class="flex"><div class="field"><label for="amount">จำนวนเงิน (บาท)</label><input id="amount" type="number" min="0.01" step="0.01" placeholder="เช่น 45" required></div><div class="field"><label for="category">หมวดหมู่</label><select id="category"><option>อาหาร</option><option>เดินทาง</option><option>ของใช้</option><option>เกม/บันเทิง</option><option>รายได้</option><option>อื่น ๆ</option></select></div></div><div style="height:12px"></div><label for="note">รายละเอียด</label><input id="note" type="text" maxlength="100" placeholder="เช่น ซื้อไข่ 10 ฟอง" required><div style="height:15px"></div><button id="saveEntry" style="width:100%" type="submit">บันทึกรายจ่าย</button><div id="entryMsg" class="msg" aria-live="polite"></div></form></section>
-<section class="card"><h2>⚙ ตั้งค่าเงินของฉัน</h2><form id="settingsForm" class="settings"><div><label for="opening">เงินตั้งต้น (บาท)</label><input id="opening" type="number" min="0" step="0.01" value="250" required></div><div><label for="reserve">กันเงินสำรอง (บาท)</label><input id="reserve" type="number" min="0" step="0.01" value="50" required></div><button id="saveSettings" type="submit">บันทึก</button></form><div id="settingsMsg" class="msg" aria-live="polite"></div><p class="sub" style="margin-top:15px">ตัวอย่าง: เริ่ม 250 บาท กันฉุกเฉิน 50 บาท จึงเหลือเงินที่ใช้ได้ 200 บาท ถ้าจ่าย 40 บาท จะใช้ได้อีก 160 บาท</p></section>
+<section class="card">
+<div id="settingsEditor"><h2>⚙ ตั้งค่าเงินของฉัน</h2><form id="settingsForm" class="settings"><div><label for="opening">เงินตั้งต้น (บาท)</label><input id="opening" type="number" min="0" step="0.01" value="250" required></div><div><label for="reserve">เงินเก็บ (บาท)</label><input id="reserve" type="number" min="0" step="0.01" value="50" required></div><button id="saveSettings" type="submit">บันทึก</button></form><button id="cancelSettings" type="button" class="ghost small" hidden>ยกเลิก</button><p class="tiny">เงินตั้งต้นเป็นยอดรวมก่อนบันทึกรายรับ–รายจ่าย ส่วนเงินเก็บกันออกจากยอดรวมนี้</p></div>
+<div id="savingsPanel" hidden><h2>เงินเก็บของฉัน</h2><div class="k">ยอดเงินเก็บปัจจุบัน</div><div id="savingsValue" class="figure gold">50 บาท</div><form id="savingsForm"><label for="savingsAmount" style="margin-top:14px">จำนวนเงินที่จะย้าย (บาท)</label><input id="savingsAmount" type="number" min="0.01" max="1000000000000" step="0.01" placeholder="เช่น 50" required><div class="flex" style="margin-top:12px"><button id="addSavings" type="submit" value="add">เพิ่มเงินเก็บ</button><button id="removeSavings" class="ghost" type="submit" value="remove">ลดเงินเก็บ</button></div></form><p class="tiny">เงินเก็บจะถูกย้ายระหว่างเงินใช้จ่ายกับเงินเก็บ ไม่ถือเป็นรายรับหรือรายจ่าย และเงินทั้งหมดไม่เปลี่ยน</p><div id="savingsMsg" class="msg" aria-live="polite"></div><h3 style="font-size:14px;margin-top:18px">ประวัติเพิ่ม/ลดเงินเก็บล่าสุด</h3><div id="savingsHistory" class="entries"></div><button id="editSettings" class="ghost small" type="button" style="margin-top:14px">แก้ไขค่าเริ่มต้น</button></div>
+<div id="settingsMsg" class="msg" aria-live="polite"></div></section>
 </div>
 <section class="card section"><div class="history-head"><div><h2 style="margin-bottom:2px">📒 ประวัติรายการ</h2><p id="countText" class="sub">ยังไม่มีรายการ</p></div><div class="toolbar"><button class="ghost small" id="csvExport" type="button">ส่งออก CSV</button><button class="ghost small" id="backupExport" type="button">สำรอง JSON</button><button class="ghost small" id="importButton" type="button">นำเข้าข้อมูล</button><input type="file" id="importFile" accept="application/json,.json" style="display:none"><button class="danger small" id="clearButton" type="button">ล้างรายการ</button></div></div><div class="entries" id="entries"><div class="empty">ยังไม่มีรายรับ–รายจ่าย เพิ่มรายการแรกได้เลย 🙂</div></div></section>
 <div class="footer">ข้อมูลบันทึกใน Cloud Firestore ของบัญชีที่เข้าสู่ระบบ พร้อมซิงก์ข้ามอุปกรณ์เมื่อเชื่อมต่ออินเทอร์เน็ต · แนะนำให้ส่งออก JSON เป็นระยะ เพื่อสำรองข้อมูลไว้ด้วย</div>
@@ -74,11 +77,12 @@ button:disabled{opacity:.55;cursor:not-allowed}
 </main>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, setPersistence, browserLocalPersistence, browserSessionPersistence } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';
-import { getFirestore, collection, doc, getDocs, addDoc, updateDoc, setDoc, deleteDoc, writeBatch, onSnapshot, query, orderBy } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, setPersistence, browserLocalPersistence, browserSessionPersistence, connectAuthEmulator } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';
+import { getFirestore, collection, doc, getDocs, addDoc, updateDoc, setDoc, deleteDoc, writeBatch, onSnapshot, query, orderBy, limit, runTransaction, connectFirestoreEmulator } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 
 import { firebaseConfig } from './firebase-config.js';
 import { usernameEmail, accountName } from './identity.js';
+import { walletTotals, savingsTransfer, commitSavingsTransfer } from './savings.js';
 
 const $ = id => document.getElementById(id);
 const money = n => new Intl.NumberFormat('th-TH', {maximumFractionDigits:2}).format(n) + ' บาท';
@@ -91,6 +95,7 @@ let entryType = 'expense', auth, db, currentUser = null, ready = false;
 let unsubscribeSettings = null, unsubscribeEntries = null;
 let receivedSettings = false, receivedEntries = false, pendingAuth = false;
 let registering = false;
+let hasSettings=false, editingSettings=false, savingsHistory=[], historyReady=false, unsubscribeSavings=null;
 const hasConfig = firebaseConfig.apiKey !== 'PASTE_API_KEY_HERE' &&
   firebaseConfig.projectId !== 'PASTE_PROJECT_ID_HERE' && firebaseConfig.appId !== 'PASTE_APP_ID_HERE';
 
@@ -124,30 +129,26 @@ function normalize(raw) {
   });
   return {opening, reserve, items};
 }
-function totals() {
-  const income = data.items.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0);
-  const expense = data.items.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0);
-  const pool = data.opening+income, balance=pool-expense, reserve=Math.max(0,Math.min(data.reserve,balance)), free=Math.max(0,balance-reserve);
-  return {income,expense,pool,balance,reserve,free};
-}
+function totals() { return walletTotals(data); }
 function render() {
   const t=totals();
+  renderSavings(t);
   $('balance').textContent=money(t.balance);
   $('balance').className='figure'+(t.balance<0?' red':'');
   $('freeMoney').textContent=money(t.free);
   $('reserveMoney').textContent=money(t.reserve);
-  $('poolValue').textContent=money(t.pool);
+  $('poolValue').textContent=money(t.balance);
   $('spentSum').textContent=money(t.expense);
   $('incomeSum').textContent=money(t.income);
   $('legendSpent').textContent=short(t.expense);
   $('legendFree').textContent=short(t.free);
   $('legendReserve').textContent=short(t.reserve);
-  const denominator = Math.max(t.pool,t.expense,1);
+  const denominator = Math.max(t.pool,t.expense+t.reserve,1);
   $('barSpent').style.width=(100*Math.min(t.expense,denominator)/denominator)+'%';
-  $('barFree').style.width=(100*t.free/denominator)+'%';
+  $('barFree').style.width=(100*Math.max(0,t.free)/denominator)+'%';
   $('barReserve').style.width=(100*t.reserve/denominator)+'%';
   $('alert').className='msg'; $('alert').textContent='';
-  if(t.balance<0) { $('alert').textContent='⚠️ รายจ่ายมากกว่าเงินทั้งหมด '+money(-t.balance);$('alert').className='msg warn'; }
+  if(t.free<0) { $('alert').textContent='⚠️ เงินใช้จ่ายติดลบ '+money(-t.free)+' กรุณาตรวจรายการหรือย้ายเงินเก็บกลับมา';$('alert').className='msg warn'; }
   else if(t.balance<data.reserve){ $('alert').textContent='⚠️ เงินคงเหลือเริ่มต่ำกว่าเป้าสำรอง '+money(data.reserve);$('alert').className='msg warn'; }
   if(document.activeElement !== $('opening')) $('opening').value=data.opening;
   if(document.activeElement !== $('reserve')) $('reserve').value=data.reserve;
@@ -167,7 +168,7 @@ function render() {
     del.addEventListener('click', async () => {
       if (!currentUser || !ready || writing || !confirm('ลบรายการ “'+x.note+'” ?')) return;
       const uid=currentUser.uid;writing=true;updateReady();del.disabled=true;
-      try { await deleteDoc(doc(db,'users',uid,'entries',x.id)); }
+      try { await changeEntry(uid,doc(db,'users',uid,'entries',x.id),'delete'); }
       catch(err) { alert(friendly(err)); }
       finally {if(currentUser?.uid===uid){writing=false;updateReady();render();}}
     });
@@ -183,13 +184,17 @@ function render() {
 }
 function updateReady() {
   ready = !!currentUser && receivedSettings && receivedEntries && navigator.onLine;
-  for (const id of ['saveEntry','saveSettings','importButton','clearButton']) $(id).disabled=!ready || writing;
+  for (const id of ['saveEntry','saveSettings','importButton','clearButton','editSettings','cancelSettings']) $(id).disabled=!ready || writing;
   $('signout').disabled=writing;
+  for(const id of ['addSavings','removeSavings'])$(id).disabled=!ready || writing || !hasSettings || !historyReady;
   if (ready) cloudStatus('เชื่อมต่อ Cloud แล้ว',true);
   else if(!navigator.onLine)cloudStatus('ออฟไลน์ — รอเชื่อมต่ออินเทอร์เน็ต',false);
 }
 function stopWatching() {
   if (unsubscribeSettings) unsubscribeSettings(); if (unsubscribeEntries) unsubscribeEntries();
+  if(unsubscribeSavings)unsubscribeSavings();
+  unsubscribeSavings=null;hasSettings=false;editingSettings=false;historyReady=false;savingsHistory=[];
+  $('savingsForm').reset();$('savingsMsg').textContent='';
   unsubscribeSettings=unsubscribeEntries=null;
   receivedSettings=receivedEntries=false;ready=false;
   data={...DEFAULTS,items:[]};editingId=null;writing=false;
@@ -201,9 +206,18 @@ function watchAccount(user) {
   const uid=user.uid;
   const settingsRef=doc(db,'users',uid,'settings','main');
   const entriesRef=collection(db,'users',uid,'entries');
+  unsubscribeSavings=onSnapshot(query(collection(db,'users',uid,'savingsTransfers'),orderBy('date','desc'),limit(20)),{includeMetadataChanges:true},snapshot=>{
+    if(currentUser?.uid!==uid)return;
+    savingsHistory=snapshot.docs.map(document=>document.data());
+    historyReady=!snapshot.metadata.fromCache;updateReady();render();
+  },error=>{
+    if(currentUser?.uid!==uid)return;
+    historyReady=false;updateReady();errorAt('savingsMsg',error);
+  });
   cloudStatus('กำลังโหลดข้อมูล...',null);
   unsubscribeSettings=onSnapshot(settingsRef, {includeMetadataChanges:true}, snap=> {
     if (currentUser?.uid!==uid) return;
+    if(!snap.metadata.hasPendingWrites)hasSettings=snap.exists();
     if (snap.exists()) {
       const raw=snap.data();
       data.opening=validNum(raw.opening)?raw.opening:DEFAULTS.opening;
@@ -218,6 +232,47 @@ function watchAccount(user) {
     );
     receivedEntries=!snap.metadata.fromCache;updateReady();render();
   }, err=> { if(currentUser?.uid!==uid)return;receivedEntries=false;updateReady();cloudStatus('ซิงก์ไม่สำเร็จ',false);errorAt('entryMsg',err); });
+}
+function renderSavings(totals) {
+  $('settingsEditor').hidden=hasSettings && !editingSettings;
+  $('savingsPanel').hidden=!hasSettings || editingSettings;
+  $('cancelSettings').hidden=!hasSettings;
+  $('savingsValue').textContent=money(totals.reserve);
+  const history=$('savingsHistory');history.replaceChildren();
+  if(!savingsHistory.length){
+    const empty=document.createElement('p');empty.className='tiny';empty.textContent=historyReady?'ยังไม่มีการย้ายเงินเก็บ':'กำลังโหลดประวัติ...';history.append(empty);
+  }
+  for(const transfer of savingsHistory){
+    const row=document.createElement('div');row.className='entry';
+    const date=new Date(transfer.date);
+    row.textContent=(transfer.direction==='add'?'เพิ่มเงินเก็บ +':'ลดเงินเก็บ −')+money(transfer.amount)+' · '+(Number.isNaN(date.getTime())?'':date.toLocaleString('th-TH'));
+    history.append(row);
+  }
+}
+$('editSettings').addEventListener('click',()=>{if(!writing){editingSettings=true;render();}});
+$('cancelSettings').addEventListener('click',()=>{if(!writing){editingSettings=false;render();}});
+$('savingsForm').addEventListener('submit',async event=>{
+  event.preventDefault();
+  if(!currentUser || !ready || writing || !hasSettings || !historyReady)return;
+  const uid=currentUser.uid,amount=Number($('savingsAmount').value),direction=event.submitter?.value || 'add';
+  try {savingsTransfer(data,amount,direction);} catch(error){errorAt('savingsMsg',error);return;}
+  writing=true;updateReady();$('savingsMsg').className='msg';$('savingsMsg').textContent='กำลังย้ายเงิน...';
+  try {
+    await commitSavingsTransfer(db,uid,amount,direction,{doc,collection,getDocs,runTransaction});
+    if(currentUser?.uid!==uid)return;
+    $('savingsAmount').value='';$('savingsMsg').textContent='ย้ายเงินเก็บสำเร็จ ✓';
+  } catch(error){if(currentUser?.uid===uid)errorAt('savingsMsg',error);}
+  finally{if(currentUser?.uid===uid){writing=false;updateReady();render();}}
+});
+async function changeEntry(uid,reference,operation,values){
+  const settingsRef=doc(db,'users',uid,'settings','main');
+  await runTransaction(db,async transaction=>{
+    const settings=await transaction.get(settingsRef);
+    if(operation==='delete')transaction.delete(reference);
+    else if(operation==='update')transaction.update(reference,values);
+    else transaction.set(reference,values);
+    if(settings.exists())transaction.update(settingsRef,{updatedAt:new Date().toISOString()});
+  });
 }
 function tab(type) {
   entryType=type;
@@ -243,8 +298,8 @@ $('entryForm').addEventListener('submit',async ev=>{
   $('saveEntry').disabled=true;$('entryMsg').textContent='กำลังบันทึกขึ้น Cloud...';$('entryMsg').className='msg';
   try {
     const values={type:entryType,amount,note:note.slice(0,100),category:category.slice(0,80)};
-    if(editingId)await updateDoc(doc(db,'users',uid,'entries',editingId),values);
-    else await addDoc(collection(db,'users',uid,'entries'),{...values,date:new Date().toISOString()});
+    if(editingId)await changeEntry(uid,doc(db,'users',uid,'entries',editingId),'update',values);
+    else await changeEntry(uid,doc(collection(db,'users',uid,'entries')),'set',{...values,date:new Date().toISOString()});
     if(currentUser?.uid!==uid)return;
     editingId=null;$('cancelEdit').hidden=true;tab(entryType);
     $('entryMsg').textContent='บันทึกลง Cloud แล้ว ✓';$('amount').value='';$('note').value='';$('amount').focus();
@@ -256,8 +311,10 @@ $('settingsForm').addEventListener('submit',async ev=>{
   const uid=currentUser.uid;
   const opening=Number($('opening').value),reserve=Number($('reserve').value);
   if(!validNum(opening)||!validNum(reserve)) {$('settingsMsg').textContent='กรุณากรอกจำนวนเงินที่ถูกต้อง';return;}
-  writing=true;updateReady();$('settingsMsg').textContent='กำลังบันทึก...';
-  try { await setDoc(doc(db,'users',uid,'settings','main'),{opening,reserve,updatedAt:new Date().toISOString()});$('settingsMsg').textContent='บันทึกการตั้งค่าใน Cloud แล้ว ✓'; }
+  const proposed=walletTotals({...data,opening,reserve});
+  if(proposed.free<0){$('settingsMsg').className='msg warn';$('settingsMsg').textContent='เงินเก็บต้องไม่เกินเงินคงเหลือหลังหักรายจ่าย';return;}
+  writing=true;updateReady();$('settingsMsg').className='msg';$('settingsMsg').textContent='กำลังบันทึก...';
+  try { await setDoc(doc(db,'users',uid,'settings','main'),{opening,reserve,updatedAt:new Date().toISOString()});if(currentUser?.uid===uid){hasSettings=true;editingSettings=false;$('settingsMsg').textContent='บันทึกการตั้งค่าใน Cloud แล้ว ✓';} }
   catch(err){errorAt('settingsMsg',err);}
   finally { if(currentUser?.uid===uid){writing=false;updateReady();render();} }
 });
@@ -278,6 +335,7 @@ async function batchWrites(refs, build) {
   for(let start=0;start<refs.length;start+=400) {
     const batch=writeBatch(db);
     for(const x of refs.slice(start,start+400))build(batch,x);
+    if(currentUser && hasSettings)batch.update(doc(db,'users',currentUser.uid,'settings','main'),{updatedAt:new Date().toISOString()});
     await batch.commit();
   }
 }
@@ -363,7 +421,10 @@ if (!hasConfig) {
   $('loginButton').disabled=true;$('registerButton').disabled=true;
 } else {
   try {
-    const app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);
+    const emulator=['localhost','127.0.0.1'].includes(location.hostname) && new URLSearchParams(location.search).get('emulator')==='1';
+    const app=initializeApp(emulator?{...firebaseConfig,projectId:'demo-money-tracker',apiKey:'demo-key'}:firebaseConfig);
+    auth=getAuth(app);db=getFirestore(app);
+    if(emulator){connectAuthEmulator(auth,'http://127.0.0.1:9099');connectFirestoreEmulator(db,'127.0.0.1',8080);}
     onAuthStateChanged(auth,user=>{
       stopWatching();currentUser=user;
       $('authGate').hidden=!!user;$('appArea').hidden=!user;$('signout').hidden=!user;

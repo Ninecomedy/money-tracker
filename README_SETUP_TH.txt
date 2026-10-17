@@ -18,6 +18,13 @@ Repository: https://github.com/Ninecomedy/money-tracker
 - Firebase บังคับ email ไม่ซ้ำ จึงไม่มี public username lookup
 - ผู้ใช้เพิ่ม แก้ไข ลบรายการ ตั้งเงินตั้งต้น/สำรอง และส่งออก CSV/JSON ได้
 - เงินเริ่มต้น 250 บาท เงินสำรอง 50 บาท
+- เมื่อบันทึก settings/main สำเร็จ จะแสดง "เงินเก็บของฉัน" โดยอัตโนมัติ บัญชีเดิมที่มีเอกสารนี้แสดงทันที
+- เพิ่ม/ลดเงินเก็บเป็นการย้ายระหว่างเงินใช้จ่ายกับ reserve ไม่เพิ่มรายรับหรือรายจ่าย
+- ปุ่มแก้ไขค่าเริ่มต้นเปิดฟอร์มเดิม และยกเลิกกลับได้
+- ประวัติ 20 รายการล่าสุดอยู่ใน users/{uid}/savingsTransfers แยกจากรายการใช้จ่าย
+- ยอดเงินทั้งหมด = เงินใช้จ่าย + เงินเก็บ หากบัญชีเดิมใช้จ่ายเกินยอด เงินใช้จ่ายอาจติดลบโดยไม่ลดเงินเก็บอัตโนมัติ
+- การสำรอง JSON เดิมเก็บยอดและรายการรายรับ–รายจ่าย ไม่รวมประวัติย้ายเงินเก็บ
+- เปิดหน้าเว็บใหม่ทุกอุปกรณ์หลังอัปเดตรุ่นเงินเก็บ เพื่อให้รายการใช้จ่ายร่วมตรวจการย้ายเงินพร้อมกัน
 - Cloud Firestore onSnapshot อัปเดตข้ามอุปกรณ์เมื่อออนไลน์
 
 ข้อจำกัดรหัสผ่าน
@@ -57,6 +64,8 @@ Repository: https://github.com/Ninecomedy/money-tracker
 พัฒนาและทดสอบ
 - npm install
 - npm test
+- ทดสอบส่วนเงินเก็บใน Firebase Emulator: เปิด auth:9099 และ firestore:8080 ด้วย firebase.emulator.json และ project demo-money-tracker แล้วรัน npm run test:savings-emulator
+- ทดสอบ UI แบบไม่แตะข้อมูลจริง: http://127.0.0.1:4173/?emulator=1 (ทำงานเฉพาะ localhost)
 - npm start แล้วเปิด http://127.0.0.1:4173
 - npm run test:cloud ทดสอบด้วยบัญชีชั่วคราวในโปรเจกต์ที่ระบุใน firebase-config.js
   ทดสอบ signup, duplicate username, wrong password, login, logout,

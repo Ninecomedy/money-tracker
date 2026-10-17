@@ -3,8 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test tests/identity.test.js",
+    "test": "node --test tests/identity.test.js tests/savings.test.js",
     "test:cloud": "node tests/cloud.test.js",
+    "test:savings-emulator": "node tests/savings-emulator.js",
     "start": "node scripts/serve.js"
   },
   "devDependencies": {

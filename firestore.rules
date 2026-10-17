@@ -7,6 +7,24 @@ service cloud.firestore {
     function validMoney(n) {
       return n is number && n >= 0 && n <= 1000000000000;
     }
+    function validSavingsTransfer(uid) {
+      let transfer = request.resource.data;
+      let settingsPath = /databases/$(database)/documents/users/$(uid)/settings/main;
+      return transfer.keys().hasOnly(['direction', 'amount', 'before', 'after', 'date'])
+        && transfer.keys().hasAll(['direction', 'amount', 'before', 'after', 'date'])
+        && validMoney(transfer.amount) && transfer.amount > 0
+        && validMoney(transfer.before) && validMoney(transfer.after)
+        && transfer.date is string && transfer.date.size() <= 30
+        && transfer.before == get(settingsPath).data.reserve
+        && transfer.after == getAfter(settingsPath).data.reserve
+        && ((transfer.direction == 'add' && math.round(transfer.after * 100) == math.round(transfer.before * 100) + math.round(transfer.amount * 100))
+          || (transfer.direction == 'remove' && math.round(transfer.after * 100) == math.round(transfer.before * 100) - math.round(transfer.amount * 100)));
+    }
+    match /users/{uid}/savingsTransfers/{transferId} {
+      allow read: if owner(uid);
+      allow create: if owner(uid) && validSavingsTransfer(uid);
+      allow update, delete: if false;
+    }
     match /users/{uid}/settings/{settingsId} {
       allow read: if owner(uid);
       allow create, update: if owner(uid)
