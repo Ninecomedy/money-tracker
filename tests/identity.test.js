@@ -8,6 +8,8 @@ test('page script parses and login form has no email input', () => {
   assert.doesNotThrow(()=>new Function(script.replace(/^import .*;$/gm,'')));
   assert.doesNotMatch(html, /type="email"/);
   assert.doesNotMatch(script, /sendPasswordResetEmail/);
+  assert.doesNotMatch(html, /resetPasswordButton/);
+  assert.doesNotMatch(script, /localStorage\s*\./);
 });
 test('case and surrounding whitespace resolve to one identity', () => {
   assert.equal(usernameEmail('  Alice_123 '), usernameEmail('alice_123'));

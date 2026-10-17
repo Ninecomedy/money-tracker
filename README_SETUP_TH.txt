@@ -9,6 +9,9 @@ Repository: https://github.com/Ninecomedy/money-tracker
 
 การใช้งาน
 - สมัครและเข้าสู่ระบบด้วย Username 3–32 ตัว: a–z, 0–9, _
+- กดสมัครบัญชีเพื่อเปิดช่อง Confirm Password ต้องกรอกรหัสให้ตรงกันก่อนสมัคร
+- เลือกจดจำ Login: Firebase browserLocalPersistence; ไม่เลือก: browserSessionPersistence
+- Firebase เก็บสถานะยืนยันตัวตน ไม่ใช่รหัสผ่าน; เว็บไม่เขียน password ลง Firestore/localStorage
 - ไม่แยกตัวพิมพ์ใหญ่–เล็ก และตัดช่องว่างหัวท้าย
 - แปลงเป็น username@money-tracker.invalid ภายใน Firebase Authentication
 - โดเมน .invalid ไม่ใช่อีเมลรับจดหมาย ห้ามใช้ส่ง reset email
@@ -19,7 +22,7 @@ Repository: https://github.com/Ninecomedy/money-tracker
 
 ข้อจำกัดรหัสผ่าน
 - บัญชี Username ไม่สามารถใช้ Forgot Password ทางอีเมลได้
-- หน้าเว็บแจ้งข้อจำกัดก่อนสมัครและเมื่อกดลืมรหัสผ่าน
+- หน้าเว็บแจ้งข้อจำกัดก่อนสมัคร ไม่มีปุ่มหรือระบบ Forgot Password
 - หากลืมรหัสและออกจากระบบแล้ว ต้องให้ผู้ดูแลพิสูจน์ตัวตนผ่านช่องทางที่เชื่อถือได้
 - ห้ามกู้บัญชีจากการบอก Username เพียงอย่างเดียว
 - โครงการนี้ยังไม่มีระบบกู้บัญชีโดยผู้ดูแลในหน้าเว็บ

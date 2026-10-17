@@ -1,5 +1,17 @@
 # Money Tracker verification — 2026-10-17
 
+## Confirm Password and Remember Login release
+
+- Registration now requires matching Password and Confirm Password; login shows Username and Password only.
+- Firebase internal identity mapping, UID paths and security rules are unchanged.
+- Explicit Firebase persistence: local when Remember Login is selected, session otherwise. Application code does not store passwords.
+- Removed Forgot Password control; retained the account recovery warning.
+- Browser tests: mismatch rejected, matching confirmation creates an account, uppercase duplicate rejected, remembered login restored after closing and reopening a tab, and logout clears authentication.
+- Automated identity and live Firebase isolation/CRUD suites passed again.
+- With Remember Login unchecked, closing the signed-in tab and opening a fresh tab returned to the login gate.
+- The disposable Confirm Password UI test account was removed after testing.
+- No existing accounts were changed. Deployment explicitly approved on 2026-10-17.
+
 Live site: https://ninecomedy.github.io/money-tracker/
 
 ## Automated tests

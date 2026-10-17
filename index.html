@@ -17,7 +17,9 @@
 .auth-wrap .flex{align-items:stretch}
 .auth-wrap .flex button{flex:1}
 .auth-wrap .field{margin-top:14px}
-#authUsername,#authPassword{font-size:16px}
+#authUsername,#authPassword,#authConfirmPassword{font-size:16px}
+.remember-login{display:flex;align-items:center;gap:8px;margin-top:14px}
+.remember-login input{width:auto}
 #signout{border:1px solid var(--line)}
 .auth-email{font-size:13px;color:var(--muted);word-break:break-word}
 .cloud-pill{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
@@ -40,9 +42,11 @@ button:disabled{opacity:.55;cursor:not-allowed}
   <form id="authForm">
     <div class="field"><label for="authUsername">Username</label><input type="text" autocomplete="username" autocapitalize="none" spellcheck="false" id="authUsername" minlength="3" maxlength="32" pattern="[A-Za-z0-9_]{3,32}" placeholder="เช่น my_wallet" required><div class="tiny">3–32 ตัว: a–z, 0–9 และ _ ไม่แยกตัวพิมพ์ใหญ่–เล็ก</div></div>
     <div class="field"><label for="authPassword">รหัสผ่าน (อย่างน้อย 6 ตัวอักษร)</label><input type="password" autocomplete="current-password" id="authPassword" minlength="6" required></div>
+    <div class="field" id="confirmPasswordField" hidden><label for="authConfirmPassword">ยืนยันรหัสผ่าน (Confirm Password)</label><input type="password" autocomplete="new-password" id="authConfirmPassword" minlength="6" disabled></div>
+    <label class="remember-login"><input type="checkbox" id="rememberLogin">จดจำการเข้าสู่ระบบบนอุปกรณ์นี้</label>
+    <p class="tiny">ไม่เลือก: เข้าสู่ระบบเฉพาะเซสชันนี้ · อุปกรณ์สาธารณะไม่ควรเลือกจดจำ</p>
     <div class="flex" style="margin-top:18px"><button type="submit" id="loginButton">เข้าสู่ระบบ</button><button class="ghost" type="button" id="registerButton">สมัครบัญชี</button></div>
   </form>
-  <button class="ghost small" type="button" id="resetPasswordButton" style="margin-top:12px">ลืมรหัสผ่าน?</button>
   <p class="tiny warning">บัญชี Username ไม่มีอีเมลกู้รหัสผ่าน หากลืมรหัสจะกู้เองไม่ได้ โปรดเก็บรหัสในตัวจัดการรหัสผ่าน</p>
   <div class="msg" id="authMsg" aria-live="polite"></div>
   <div class="setup-info" id="setupInfo" hidden>ยังไม่ได้ตั้งค่า Firebase: เปิดไฟล์ index.html แล้วใส่ค่า firebaseConfig ที่ Firebase Console ให้ครบก่อนนำไปใช้งาน</div>
@@ -70,7 +74,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 </main>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, setPersistence, browserLocalPersistence, browserSessionPersistence } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';
 import { getFirestore, collection, doc, getDocs, addDoc, updateDoc, setDoc, deleteDoc, writeBatch, onSnapshot, query, orderBy } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 
 import { firebaseConfig } from './firebase-config.js';
@@ -86,6 +90,7 @@ let editingId = null, writing = false;
 let entryType = 'expense', auth, db, currentUser = null, ready = false;
 let unsubscribeSettings = null, unsubscribeEntries = null;
 let receivedSettings = false, receivedEntries = false, pendingAuth = false;
+let registering = false;
 const hasConfig = firebaseConfig.apiKey !== 'PASTE_API_KEY_HERE' &&
   firebaseConfig.projectId !== 'PASTE_PROJECT_ID_HERE' && firebaseConfig.appId !== 'PASTE_APP_ID_HERE';
 
@@ -316,26 +321,46 @@ async function authAction(work) {
   pendingAuth=true;$('loginButton').disabled=true;$('registerButton').disabled=true;$('authMsg').textContent='กำลังติดต่อ Firebase...';$('authMsg').className='msg';
   try { const message=await work();$('authMsg').textContent=message || 'สำเร็จ ✓'; }
   catch(err) {errorAt('authMsg',err);}
-  finally {$('authPassword').value='';pendingAuth=false;$('loginButton').disabled=false;$('registerButton').disabled=false;}
+  finally {$('authPassword').value='';$('authConfirmPassword').value='';pendingAuth=false;$('loginButton').disabled=false;$('registerButton').disabled=false;}
 }
 $('authForm').addEventListener('submit',ev=>{
-  ev.preventDefault();authAction(()=>signInWithEmailAndPassword(auth,usernameEmail($('authUsername').value),$('authPassword').value));
+  ev.preventDefault();
+  if(pendingAuth || !$('authForm').reportValidity())return;
+  if(registering && $('authPassword').value!==$('authConfirmPassword').value){
+    $('authMsg').className='msg warn';$('authMsg').textContent='รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน';
+    $('authConfirmPassword').focus();return;
+  }
+  const username=$('authUsername').value,password=$('authPassword').value;
+  const persistence=$('rememberLogin').checked?browserLocalPersistence:browserSessionPersistence;
+  const operation=registering?createUserWithEmailAndPassword:signInWithEmailAndPassword;
+  authAction(async()=>{
+    const internalEmail=usernameEmail(username);
+    await setPersistence(auth,persistence);
+    await operation(auth,internalEmail,password);
+  });
 });
 $('registerButton').addEventListener('click',()=>{
-  if(!$('authUsername').reportValidity()||!$('authPassword').reportValidity())return;
-  authAction(()=>createUserWithEmailAndPassword(auth,usernameEmail($('authUsername').value),$('authPassword').value));
+  if(pendingAuth)return;
+  setAuthMode(!registering);
 });
-$('resetPasswordButton').addEventListener('click',()=>{
-  $('authMsg').className='msg warn';
-  $('authMsg').textContent='บัญชี Username ไม่มีอีเมลรับลิงก์กู้รหัสผ่าน หากลืมรหัสและออกจากระบบแล้ว ต้องติดต่อผู้ดูแลเพื่อตรวจสอบตัวตน ไม่สามารถกู้ด้วย Username อย่างเดียวได้';
-});
+function setAuthMode(register){
+  registering=register;
+  $('confirmPasswordField').hidden=!register;
+  $('authConfirmPassword').disabled=!register;
+  $('authConfirmPassword').required=register;
+  $('authConfirmPassword').value='';$('authPassword').value='';
+  $('authPassword').autocomplete=register?'new-password':'current-password';
+  $('loginButton').textContent=register?'ยืนยันสมัครบัญชี':'เข้าสู่ระบบ';
+  $('registerButton').textContent=register?'กลับเข้าสู่ระบบ':'สมัครบัญชี';
+  $('authMsg').textContent='';
+}
 $('signout').addEventListener('click',async()=>{try{await signOut(auth);}catch(err){alert(friendly(err));}});
 
 tab('expense');render();updateReady();
 if (!hasConfig) {
   cloudStatus('ยังไม่ได้ตั้งค่า Firebase',false);
   $('authGate').hidden=false;$('setupInfo').hidden=false;
-  $('loginButton').disabled=true;$('registerButton').disabled=true;$('resetPasswordButton').disabled=true;
+  $('loginButton').disabled=true;$('registerButton').disabled=true;
 } else {
   try {
     const app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);
@@ -343,7 +368,7 @@ if (!hasConfig) {
       stopWatching();currentUser=user;
       $('authGate').hidden=!!user;$('appArea').hidden=!user;$('signout').hidden=!user;
       $('userEmail').textContent=user ? '🔐 เข้าสู่ระบบด้วย '+accountName(user) : '';
-      $('authPassword').value='';
+      setAuthMode(false);
       if(user) watchAccount(user);
       else cloudStatus('รอเข้าสู่ระบบ',null);
     },err=>{cloudStatus('เชื่อมต่อ Authentication ไม่สำเร็จ',false);errorAt('authMsg',err);$('authGate').hidden=false;});
