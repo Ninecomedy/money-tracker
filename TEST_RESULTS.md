@@ -1,5 +1,18 @@
 # Money Tracker verification — 2026-10-17
 
+## Weekly/monthly reports — 2026-10-20, local only
+
+- Unit suite: 12 passing tests, including Bangkok midnight, Monday/Sunday boundaries, cross-year weeks, leap February, old months, filtering, decimal arithmetic and savings exclusion.
+- `npm run test:reports-emulator`: creates synthetic data only in `demo-money-tracker`. All 8 original fixture documents remain byte-for-byte equal after report calculations; income 800 / expense 250 / net 550 are unchanged. Settings remain opening 250 / savings 50.
+- Emulator edits and a disposable entry deletion recompute totals correctly, preserving original transaction date and UID through uppercase username re-login. Savings regression suite passed, including concurrent transfers and cross-account denials.
+- Browser: monthly history displays all 8 fixtures; weekly cross-year drill-down shows income 100 / expense 40 / net 60. Editing that expense to 45 through the existing UI updates the selected summary to net 55 automatically, keeping 8 entries and savings 50.
+- Browser: October card and drill-down both show income 700 / expense 180 / net 520 / 4 entries. Income filter returns 2 entries; combined income + food filter shows the empty state without changing period totals. Back retains the selected October month.
+- Mobile 390 x 844: document width 375, no horizontal overflow. Desktop and mobile previews were inspected. Screenshots are in ignored `test-results/reports-{history,weekly,monthly,drilldown,mobile}.png`.
+- Existing delete confirmation handler is reused unchanged; deletion/recalculation was tested through the emulator SDK, not by accepting a browser delete dialog.
+- No production records were read or written for tests. Auth mapping, savings code, production rules, database paths and schema are unchanged. No migration, commit, push or deploy performed.
+- Known limits: summaries use the existing full entries snapshot (no pagination); invalid legacy dates remain visible in an Unknown Date history group but cannot belong to a weekly/monthly calendar summary. The existing `note` field serves as the transaction description; no new field is persisted. Filters alter visible rows only, not the period headline totals.
+
+
 ## Savings Wallet — local release candidate (not deployed)
 
 - Resumed existing working-tree changes; no production accounts or data were changed or deleted.

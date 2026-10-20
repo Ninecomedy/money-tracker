@@ -32,6 +32,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 @media(max-width:400px){.entry{align-items:flex-start}.e-amt{width:100%;text-align:right}}
 @media(max-width:700px){.cloud-pill{width:100%}.auth-wrap{margin:18px auto}}
 </style>
+<link rel="stylesheet" href="./reports.css">
 </head>
 <body>
 <main class="shell">
@@ -83,6 +84,7 @@ import { getFirestore, collection, doc, getDocs, addDoc, updateDoc, setDoc, dele
 import { firebaseConfig } from './firebase-config.js';
 import { usernameEmail, accountName } from './identity.js';
 import { walletTotals, savingsTransfer, commitSavingsTransfer } from './savings.js';
+import { createReports } from './reports-ui.js';
 
 const $ = id => document.getElementById(id);
 const money = n => new Intl.NumberFormat('th-TH', {maximumFractionDigits:2}).format(n) + ' บาท';
@@ -153,14 +155,14 @@ function render() {
   if(document.activeElement !== $('opening')) $('opening').value=data.opening;
   if(document.activeElement !== $('reserve')) $('reserve').value=data.reserve;
   $('countText').textContent=data.items.length+' รายการ';
-  const root=$('entries');root.replaceChildren();
-  if (!data.items.length) { const empty=document.createElement('div');empty.className='empty';empty.textContent='ยังไม่มีรายรับ–รายจ่าย เพิ่มรายการแรกได้เลย 🙂';root.appendChild(empty); }
-  else for (const x of [...data.items].reverse()) {
+  reports.update(data.items,receivedEntries);
+}
+function entryRow(x) {
     const e=document.createElement('div'); e.className='entry';
     const left=document.createElement('div');left.className='e-left';
     const note=document.createElement('div');note.className='e-note';note.textContent=x.note;
     const meta=document.createElement('div');meta.className='e-meta';const d=new Date(x.date);
-    meta.textContent=x.category+' · '+(Number.isNaN(d.getTime())?'ไม่ทราบวันที่':d.toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'}));
+    meta.textContent=x.category+' · '+(Number.isNaN(d.getTime())?'ไม่ทราบวันที่':d.toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short',timeZone:'Asia/Bangkok'}));
     left.append(note,meta);
     const right=document.createElement('div');right.className='e-right';
     const amt=document.createElement('div');amt.className='e-amt '+(x.type==='income'?'inc':'exp');amt.textContent=(x.type==='income'?'+':'−')+money(x.amount);
@@ -179,9 +181,9 @@ function render() {
       $('amount').value=x.amount;$('note').value=x.note;$('category').value=x.category;
       $('entryMsg').textContent='กำลังแก้ไขรายการ';$('cancelEdit').hidden=false;$('amount').focus();
     });
-    right.append(amt,edit,del);e.append(left,right);root.appendChild(e);
-  }
+    right.append(amt,edit,del);e.append(left,right);return e;
 }
+const reports=createReports($('entries'),entryRow);
 function updateReady() {
   ready = !!currentUser && receivedSettings && receivedEntries && navigator.onLine;
   for (const id of ['saveEntry','saveSettings','importButton','clearButton','editSettings','cancelSettings']) $(id).disabled=!ready || writing;
@@ -191,6 +193,7 @@ function updateReady() {
   else if(!navigator.onLine)cloudStatus('ออฟไลน์ — รอเชื่อมต่ออินเทอร์เน็ต',false);
 }
 function stopWatching() {
+  reports.reset();
   if (unsubscribeSettings) unsubscribeSettings(); if (unsubscribeEntries) unsubscribeEntries();
   if(unsubscribeSavings)unsubscribeSavings();
   unsubscribeSavings=null;hasSettings=false;editingSettings=false;historyReady=false;savingsHistory=[];
